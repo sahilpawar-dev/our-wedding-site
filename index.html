@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preksha &amp; Sahil - Wedding</title>
+  <title>Preksha &amp; Bharat - Wedding</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,6 +16,155 @@
       --color-text: #3D3D3D;
       --color-gold: #C9A962;
       --color-white: #FFFFFF;
+    }
+
+    /* Music Player Styles */
+    .music-player {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 12px 16px;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(156, 175, 136, 0.2);
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .music-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      color: var(--color-sage);
+      width: 40px;
+      height: 40px;
+      position: relative;
+    }
+
+    .music-toggle:hover {
+      background-color: var(--color-sage);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .music-info {
+      display: none;
+      min-width: 150px;
+    }
+
+    .music-info.visible {
+      display: block;
+      animation: fadeInInfo 0.3s ease;
+    }
+
+    .music-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-progress {
+      width: 100%;
+      height: 3px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin-top: 6px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .music-progress-bar {
+      height: 100%;
+      background: var(--color-sage);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .music-time {
+      font-size: 10px;
+      color: var(--color-text);
+      opacity: 0.6;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    @media (max-width: 640px) {
+      .music-player {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 12px;
+      }
+
+      .music-info {
+        display: none !important;
+      }
+
+      .music-info.visible {
+        display: none !important;
+      }
+
+      .music-toggle {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+      }
+    }
+
+    @keyframes fadeInInfo {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .music-toggle.playing::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid var(--color-sage);
+      opacity: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
     }
     
     html, body {
@@ -121,7 +270,39 @@
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="h-full overflow-auto"><!-- Envelope Overlay -->
+ <body class="h-full overflow-auto">
+  <!-- Music Player -->
+  <div class="music-player" id="musicPlayer">
+    <button class="music-toggle" id="musicToggle" title="Toggle music">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="playIcon">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+      </svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="pauseIcon" style="display: none;">
+        <circle cx="12" cy="12" r="1"></circle>
+        <path d="M6 4v16"></path>
+        <path d="M18 4v16"></path>
+      </svg>
+    </button>
+    <div class="music-info" id="musicInfo">
+      <div class="music-title" id="musicTitle">Now Playing</div>
+      <div class="music-progress">
+        <div class="music-progress-bar" id="progressBar"></div>
+      </div>
+      <div class="music-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
+    </div>
+  </div>
+
+  <!-- Audio Elements -->
+  <!-- 
+    IMPORTANT: Place your wedding-march.mp3 file in the same directory as this HTML file
+    The audio player will look for it at: ./wedding-march.mp3
+  -->
+  <audio id="audioPlayer" preload="metadata">
+    <source src="./wedding-march.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Envelope Overlay -->
   <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center" style="background: linear-gradient(135deg, #E8DCC8 0%, #F5F0E8 100%);">
    <style>
       @keyframes envelopeSlideIn {
@@ -183,7 +364,7 @@
       </text> <!-- & symbol --> <text x="50" y="58" font-family="Cormorant Garamond, serif" font-size="18" font-weight="300" fill="#FAF7F2" text-anchor="middle" opacity="0.8">
        &amp;
       </text> <!-- C letter --> <text x="62" y="58" font-family="Cormorant Garamond, serif" font-size="20" font-weight="400" fill="#FAF7F2" text-anchor="middle">
-       S
+       B
       </text> <!-- Shine effect --> <ellipse cx="50" cy="40" rx="18" ry="12" fill="white" opacity="0.15" /> <defs>
        <radialgradient id="sealGradient">
         <stop offset="0%" style="stop-color:#E8C547;stop-opacity:1" />
@@ -196,14 +377,14 @@
     </div><!-- Envelope Front -->
     <div class="bg-white rounded-b-lg shadow-2xl px-12 py-8 text-center -mt-2" style="border-top: 2px solid #E8DCC8;">
      <p class="text-sm tracking-[0.3em] uppercase mb-4" style="color: var(--color-sage);">You are cordially invited</p>
-     <p class="font-display text-3xl" style="color: var(--color-text);">Preksha &amp; Sahil</p>
+     <p class="font-display text-3xl" style="color: var(--color-text);">Preksha &amp; Bharat</p>
     </div>
    </div>
   </div>
   <div id="app-wrapper" class="w-full min-h-full"><!-- Navigation -->
    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 bg-[#FAF7F2]/95 backdrop-blur-sm transition-all duration-300">
     <div class="max-w-6xl mx-auto px-6 py-4">
-     <div class="flex items-center justify-between"><a href="#home" class="font-display text-2xl font-light tracking-wide" style="color: var(--color-sage);">P &amp; S</a>
+     <div class="flex items-center justify-between"><a href="#home" class="font-display text-2xl font-light tracking-wide" style="color: var(--color-sage);">P &amp; B</a>
       <div class="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase"><a href="#home" class="nav-link" style="color: var(--color-text);">Home</a> <a href="#story" class="nav-link" style="color: var(--color-text);">Our Story</a> <a href="#details" class="nav-link" style="color: var(--color-text);">Details</a> <a href="#schedule" class="nav-link" style="color: var(--color-text);">Schedule</a> <a href="#map" class="nav-link" style="color: var(--color-text);">Location</a>
       </div><button id="mobile-menu-btn" class="md:hidden p-2" onclick="toggleMobileMenu()">
        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"></line> <line x1="3" y1="12" x2="21" y2="12"></line> <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -222,7 +403,7 @@
       </svg>
      </div>
      <p id="welcome-text" class="text-sm tracking-[0.3em] uppercase mb-6 fade-in" style="color: var(--color-sage); animation-delay: 0.2s;">We invite you to celebrate our love</p>
-     <h1 id="couple-names" class="font-display text-6xl md:text-8xl font-light mb-6 fade-in" style="color: var(--color-text); animation-delay: 0.4s;">Preksha <span class="text-4xl md:text-5xl" style="color: var(--color-sage);">&amp;</span> Sahil</h1>
+     <h1 id="couple-names" class="font-display text-6xl md:text-8xl font-light mb-6 fade-in" style="color: var(--color-text); animation-delay: 0.4s;">Preksha <span class="text-4xl md:text-5xl" style="color: var(--color-sage);">&amp;</span> Bharat</h1>
      <div class="flex items-center justify-center gap-4 mb-8 fade-in" style="animation-delay: 0.6s;">
       <div class="h-px w-16" style="background-color: var(--color-sage);"></div>
       <p class="font-display text-xl italic" style="color: var(--color-sage);">are getting married</p>
@@ -230,7 +411,7 @@
      </div>
      <!-- Shagun Hotel & Banquet -->
      <p id="wedding-date-display" class="font-display text-3xl md:text-4xl font-light tracking-wide fade-in" style="color: var(--color-text); animation-delay: 0.8s;">April 19 - 20, 2026</p>
-     <p id="venue-display" class="mt-4 text-sm tracking-[0.2em] uppercase fade-in" style="color: var(--color-sage); animation-delay: 1s;"> Surat • Gujarat,</p><!-- Countdown -->
+     <p id="venue-display" class="mt-4 text-sm tracking-[0.2em] uppercase fade-in" style="color: var(--color-sage); animation-delay: 1s;"> Surat • Gujarat • India</p><!-- Countdown -->
      <div id="countdown" class="mt-12 flex justify-center gap-8 fade-in" style="animation-delay: 1.2s;">
       <div class="text-center">
        <div id="days" class="font-display text-4xl" style="color: var(--color-text);">
@@ -265,27 +446,6 @@
        </div>
       </div>
      </div><a href="#rsvp" class="inline-block mt-12 px-10 py-4 border text-sm tracking-widest uppercase transition-all duration-300 hover:bg-[#9CAF88] hover:text-white fade-in" style="border-color: var(--color-sage); color: var(--color-sage); animation-delay: 1.4s;"> Confirm Attendance </a>
-    </div>
-   </section><!-- Our Story Section -->
-   <section id="story" class="scroll-section py-24 px-6" style="background-color: var(--color-white);">
-    <div class="max-w-4xl mx-auto">
-     <div class="text-center mb-16">
-      <p class="text-sm tracking-[0.3em] uppercase mb-4" style="color: var(--color-sage);">How it all began</p>
-      <h2 class="font-display text-5xl font-light" style="color: var(--color-text);">Our Story</h2>
-     </div>
-     <div class="grid md:grid-cols-2 gap-12 items-center">
-      <div class="decorative-border p-8">
-       <div class="aspect-square bg-gradient-to-br from-[#9CAF88]/20 to-[#C9A962]/20 flex items-center justify-center">
-        <svg width="120" height="120" viewbox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40" style="color: var(--color-sage);"><circle cx="60" cy="60" r="50" /> <path d="M60 20 C40 40, 40 60, 60 80 C80 60, 80 40, 60 20" fill="currentColor" opacity="0.3" /> <path d="M40 50 Q60 30, 80 50 Q60 70, 40 50" fill="currentColor" opacity="0.3" />
-        </svg>
-       </div>
-      </div>
-      <div class="space-y-6">
-       <p class="font-display text-2xl italic leading-relaxed" style="color: var(--color-sage);">"In you, I found my forever home..."</p>
-       <p class="leading-relaxed" style="color: var(--color-text);">Our story began with a simple day in Mumbai, no grand plans, just long walks, quiet pauses, shared smiles, and moments that felt effortless. In that ordinary day, we found something extraordinary: peace in each other’s presence, comfort in silence, and joy in the smallest details. Somewhere between the crowds and the calm, we understood that love isn’t about places or plans, but about choosing each other in every moment. </p>
-       <p class="leading-relaxed" style="color: var(--color-text);">Since then, every step feels lighter, every moment feels warmer, and life feels more beautiful, because we’re walking forward together.</p>
-      </div>
-     </div>
     </div>
    </section><!-- Details Section -->
    <section id="details" class="scroll-section py-24 px-6" style="background-color: var(--color-cream);">
@@ -340,54 +500,6 @@
        <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel & Banquet</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Surat, Gujarat</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">April 20, 2026</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- Schedule Section -->
-   <section id="schedule" class="scroll-section py-24 px-6" style="background-color: var(--color-white);">
-    <div class="max-w-3xl mx-auto">
-     <div class="text-center mb-16">
-      <p class="text-sm tracking-[0.3em] uppercase mb-4" style="color: var(--color-sage);">The celebrations</p>
-      <h2 class="font-display text-5xl font-light" style="color: var(--color-text);">Wedding Schedule</h2>
-     </div>
-     <div class="space-y-8">
-      <!-- Day 1: April 19 -->
-      <div class="mb-12">
-       <h3 class="font-display text-2xl mb-8" style="color: var(--color-sage);">April 19, 2026</h3>
-       
-       <!-- Haldi -->
-       <div class="timeline-item pb-8">
-        <p class="text-sm tracking-widest uppercase mb-1" style="color: var(--color-sage);">10:00 AM</p>
-        <h4 class="font-display text-2xl mb-2" style="color: var(--color-text);">Haldi</h4>
-        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel & Banquet, Surat, Gujarat</p>
-       </div>
-       
-       <!-- Mayra -->
-       <div class="timeline-item pb-8">
-        <p class="text-sm tracking-widest uppercase mb-1" style="color: var(--color-sage);">3:00 PM</p>
-        <h4 class="font-display text-2xl mb-2" style="color: var(--color-text);">Mayra</h4>
-        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Mahalaxmi Party Plot, Surat, Gujarat</p>
-       </div>
-       
-       <!-- Reception Day 1 -->
-       <div class="timeline-item pb-8">
-        <p class="text-sm tracking-widest uppercase mb-1" style="color: var(--color-sage);">6:00 PM Onwards</p>
-        <h4 class="font-display text-2xl mb-2" style="color: var(--color-text);">Reception</h4>
-        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Mahalaxmi Party Plot, Surat, Gujarat</p>
-       </div>
-      </div>
-
-      <!-- Day 2: April 20 -->
-      <div>
-       <h3 class="font-display text-2xl mb-8" style="color: var(--color-sage);">April 20, 2026</h3>
-       
-       <!-- Marriage Ceremony -->
-       <div class="timeline-item pb-8">
-        <p class="text-sm tracking-widest uppercase mb-1" style="color: var(--color-sage);">12:39 PM Onwards</p>
-        <h4 class="font-display text-2xl mb-2" style="color: var(--color-text);">Marriage Ceremony</h4>
-        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Exchange of vows</p>
-        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel & Banquet, Surat, Gujarat</p>
-       </div>
       </div>
      </div>
     </div>
@@ -504,7 +616,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
         Get Directions
        </a>
-       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Reception%20-%20Preksha%20%26%20Sahil's%20Wedding&dates=20260419T121200Z/20260419T210000Z&location=Mahalaxmi%20Party%20Plot%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Reception%20-%20Preksha%20%26%20Bharat's%20Wedding&dates=20260419T121200Z/20260419T210000Z&location=Mahalaxmi%20Party%20Plot%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
         Add to Calendar
        </a>
@@ -545,7 +657,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
         Get Directions
        </a>
-       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Preksha%20%26%20Sahil's%20Marriage%20Ceremony&dates=20260420T071900Z/20260420T140000Z&location=Shagun%20Hotel%20%26%20Banquet%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Preksha%20%26%20Bharat's%20Marriage%20Ceremony&dates=20260420T071900Z/20260420T140000Z&location=Shagun%20Hotel%20%26%20Banquet%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
         Add to Calendar
        </a>
@@ -558,31 +670,128 @@
      <svg width="80" height="40" viewbox="0 0 80 40" fill="currentColor" class="mx-auto opacity-40"><path d="M40 5 Q30 15, 25 25 Q22 32, 20 38 Q27 30, 32 22 Q38 12, 40 5" /> <path d="M40 5 Q50 15, 55 25 Q58 32, 60 38 Q53 30, 48 22 Q42 12, 40 5" />
      </svg>
     </div>
-    <p class="font-display text-2xl mb-2" style="color: var(--color-text);">Preksha &amp; Sahil</p>
+    <p class="font-display text-2xl mb-2" style="color: var(--color-text);">Preksha &amp; Bharat</p>
     <p class="text-sm tracking-widest" style="color: var(--color-sage);">April 20, 2026</p>
     <p class="mt-6 text-xs" style="color: var(--color-text); opacity: 0.5;">Made with love</p>
    </footer>
   </div>
   <script>
-    // Open envelope function
+    // Music Player Functionality with Soothing Music & Auto-play
+    const audioPlayer = document.getElementById('audioPlayer');
+    const musicToggle = document.getElementById('musicToggle');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const musicInfo = document.getElementById('musicInfo');
+    const musicTitle = document.getElementById('musicTitle');
+
+    // Soothing Playlist with Local Wedding March
+    const playlist = [
+      {
+        url: './wedding-march.mp3',
+        title: 'Wedding March'
+      }
+    ];
+
+    let currentTrack = 0;
+
+    // Set initial audio source
+    audioPlayer.src = playlist[currentTrack].url;
+    audioPlayer.loop = true; // Loop the current track
+    audioPlayer.volume = 0.4; // Set volume to 40% for gentle background music
+
+    // Update progress bar
+    audioPlayer.addEventListener('timeupdate', () => {
+      if (audioPlayer.duration) {
+        const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.style.width = percent + '%';
+        currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+      }
+    });
+
+    // Update duration when metadata loads
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audioPlayer.duration);
+      musicTitle.textContent = playlist[currentTrack].title;
+    });
+
+    // Play next track when current finishes (if not looping)
+    audioPlayer.addEventListener('ended', () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      audioPlayer.src = playlist[currentTrack].url;
+      audioPlayer.play();
+      updatePlayButton();
+    });
+
+    // Toggle play/pause
+    musicToggle.addEventListener('click', () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
+      updatePlayButton();
+    });
+
+    // Update play/pause icon
+    audioPlayer.addEventListener('play', updatePlayButton);
+    audioPlayer.addEventListener('pause', updatePlayButton);
+
+    function updatePlayButton() {
+      if (audioPlayer.paused) {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        musicToggle.classList.remove('playing');
+        musicInfo.classList.remove('visible');
+      } else {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        musicToggle.classList.add('playing');
+        musicInfo.classList.add('visible');
+      }
+    }
+
+    // Click on progress bar to seek
+    document.querySelector('.music-progress').addEventListener('click', (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+
+    // Format time helper
+    function formatTime(seconds) {
+      if (!seconds || isNaN(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Music only plays when envelope is opened - no auto-play on page load
+
+    // Open envelope function - play music when envelope is clicked
     function openEnvelope() {
       const overlay = document.getElementById('envelope-overlay');
       const container = overlay.querySelector('.envelope-container');
       
-      // Add closing animation
+      // Play music when envelope is opened
+      audioPlayer.play().catch((error) => {
+        console.log('Could not auto-play music:', error);
+      });
+      updatePlayButton();
+      
       container.classList.add('envelope-closing');
       
-      // Remove overlay after animation completes and scroll to top
       setTimeout(() => {
         overlay.style.display = 'none';
-        // Scroll to top of page
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 800);
     }
 
     // Default configuration
     const defaultConfig = {
-      couple_names: 'Preksha & Sahil',
+      couple_names: 'Preksha & Bharat',
       wedding_date: 'April 20, 2026',
       venue_name: 'Hacienda del Sol',
       venue_location: 'Toledo, Spain',
@@ -624,18 +833,6 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // RSVP form handling
-    document.getElementById('rsvp-form')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = this;
-      const successMsg = document.getElementById('rsvp-success');
-      
-      // Hide form fields and show success
-      const formElements = form.querySelectorAll('input, select, textarea, button[type="submit"]');
-      formElements.forEach(el => el.style.display = 'none');
-      successMsg.classList.remove('hidden');
-    });
-
     // Smooth scroll for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
@@ -646,94 +843,6 @@
         }
       });
     });
-
-    // Element SDK initialization
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig: defaultConfig,
-        onConfigChange: async function(config) {
-          // Update couple names
-          const names = config.couple_names || defaultConfig.couple_names;
-          const nameParts = names.split('&').map(n => n.trim());
-          if (nameParts.length === 2) {
-            document.getElementById('couple-names').innerHTML = `${nameParts[0]} <span class="text-4xl md:text-5xl" style="color: var(--color-sage);">&</span> ${nameParts[1]}`;
-          } else {
-            document.getElementById('couple-names').textContent = names;
-          }
-
-          // Update welcome message
-          document.getElementById('welcome-text').textContent = config.welcome_message || defaultConfig.welcome_message;
-
-          // Update wedding date
-          document.getElementById('wedding-date-display').textContent = config.wedding_date || defaultConfig.wedding_date;
-
-          // Update venue
-          const venueName = config.venue_name || defaultConfig.venue_name;
-          const venueLocation = config.venue_location || defaultConfig.venue_location;
-          document.getElementById('venue-display').textContent = `${venueName} • ${venueLocation}`;
-
-          // Update colors
-          const root = document.documentElement;
-          root.style.setProperty('--color-cream', config.background_color || defaultConfig.background_color);
-          root.style.setProperty('--color-sage', config.accent_color || defaultConfig.accent_color);
-          root.style.setProperty('--color-text', config.text_color || defaultConfig.text_color);
-          root.style.setProperty('--color-gold', config.highlight_color || defaultConfig.highlight_color);
-          root.style.setProperty('--color-white', config.surface_color || defaultConfig.surface_color);
-
-          // Update font
-          const fontFamily = config.font_family || defaultConfig.font_family;
-          document.body.style.fontFamily = `${fontFamily}, sans-serif`;
-
-          // Update font size
-          const baseSize = config.font_size || defaultConfig.font_size;
-          document.body.style.fontSize = `${baseSize}px`;
-        },
-        mapToCapabilities: function(config) {
-          return {
-            recolorables: [
-              {
-                get: () => config.background_color || defaultConfig.background_color,
-                set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
-              },
-              {
-                get: () => config.surface_color || defaultConfig.surface_color,
-                set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
-              },
-              {
-                get: () => config.text_color || defaultConfig.text_color,
-                set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
-              },
-              {
-                get: () => config.accent_color || defaultConfig.accent_color,
-                set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
-              },
-              {
-                get: () => config.highlight_color || defaultConfig.highlight_color,
-                set: (value) => { config.highlight_color = value; window.elementSdk.setConfig({ highlight_color: value }); }
-              }
-            ],
-            borderables: [],
-            fontEditable: {
-              get: () => config.font_family || defaultConfig.font_family,
-              set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
-            },
-            fontSizeable: {
-              get: () => config.font_size || defaultConfig.font_size,
-              set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
-            }
-          };
-        },
-        mapToEditPanelValues: function(config) {
-          return new Map([
-            ['couple_names', config.couple_names || defaultConfig.couple_names],
-            ['wedding_date', config.wedding_date || defaultConfig.wedding_date],
-            ['venue_name', config.venue_name || defaultConfig.venue_name],
-            ['venue_location', config.venue_location || defaultConfig.venue_location],
-            ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
-          ]);
-        }
-      });
-    }
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d5000d6c5634732',t:'MTc3MjI4MjU2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
