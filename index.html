@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Preksha &amp; Bharat - Wedding</title>
+  <title>P &amp; B - Wedding</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -166,6 +166,176 @@
         opacity: 0;
       }
     }
+
+    /* RSVP Modal Styles */
+    .rsvp-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 20px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .rsvp-modal {
+      background: var(--color-white);
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .rsvp-modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      color: var(--color-text);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .rsvp-modal p {
+      text-align: center;
+      color: var(--color-text);
+      opacity: 0.7;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .rsvp-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-sage);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      color: var(--color-text);
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--color-sage);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .btn-submit {
+      background: var(--color-sage);
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background: #8a9876;
+      transform: translateY(-2px);
+    }
+
+    .btn-close {
+      background: #f0f0f0;
+      color: var(--color-text);
+      border: 1px solid #ddd;
+    }
+
+    .btn-close:hover {
+      background: #e5e5e5;
+    }
+
+    .success-message {
+      background: #e8f5e9;
+      border: 1px solid #81c784;
+      color: #2e7d32;
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: none;
+      animation: slideDown 0.4s ease-out;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
     
     html, body {
       height: 100%;
@@ -273,36 +443,59 @@
  <body class="h-full overflow-auto">
   <!-- Music Player -->
   <div class="music-player" id="musicPlayer">
-    <button class="music-toggle" id="musicToggle" title="Toggle music">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="playIcon">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-      </svg>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="pauseIcon" style="display: none;">
-        <circle cx="12" cy="12" r="1"></circle>
-        <path d="M6 4v16"></path>
-        <path d="M18 4v16"></path>
-      </svg>
-    </button>
-    <div class="music-info" id="musicInfo">
-      <div class="music-title" id="musicTitle">Now Playing</div>
-      <div class="music-progress">
-        <div class="music-progress-bar" id="progressBar"></div>
-      </div>
-      <div class="music-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></div>
+   <button class="music-toggle" id="musicToggle" title="Toggle music">
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="playIcon">
+     <polygon points="5 3 19 12 5 21 5 3"></polygon>
+    </svg>
+    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="pauseIcon" style="display: none;">
+     <circle cx="12" cy="12" r="1" /> <path d="M6 4v16" /> <path d="M18 4v16" />
+    </svg></button>
+   <div class="music-info" id="musicInfo">
+    <div class="music-title" id="musicTitle">
+     Now Playing
     </div>
-  </div>
-
-  <!-- Audio Elements -->
-  <!-- 
-    IMPORTANT: Place your wedding-march.mp3 file in the same directory as this HTML file
-    The audio player will look for it at: ./wedding-march.mp3
-  -->
+    <div class="music-progress">
+     <div class="music-progress-bar" id="progressBar"></div>
+    </div>
+    <div class="music-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+    </div>
+   </div>
+  </div><!-- Audio Elements -->
   <audio id="audioPlayer" preload="metadata">
-    <source src="./wedding-march.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-
-  <!-- Envelope Overlay -->
+   <source src="./wedding-march.mp3" type="audio/mpeg"> Your browser does not support the audio element.
+  </audio><!-- RSVP Modal -->
+  <div id="rsvpModal" class="rsvp-modal-overlay" style="display: none;">
+   <div class="rsvp-modal">
+    <div class="success-message" id="successMessage">
+     <p style="margin: 0;">✓ Thank you! Your RSVP has been saved.</p>
+    </div>
+    <h2>Confirm Your Attendance</h2>
+    <p>We'd love to know if you can make it!</p>
+    <form id="rsvpForm" class="rsvp-form" onsubmit="submitRsvp(event)">
+     <div class="form-group">
+      <label for="name">Your Name *</label> <input type="text" id="name" name="name" required placeholder="Full name">
+     </div>
+     <div class="form-group">
+      <label for="email">Email Address *</label> <input type="email" id="email" name="email" required placeholder="your@email.com">
+     </div>
+     <div class="form-group">
+      <label for="phone">Phone Number</label> <input type="tel" id="phone" name="phone" placeholder="Optional">
+     </div>
+     <div class="form-group">
+      <label for="attending">Will you be attending? *</label> <select id="attending" name="attending" required> <option value="">Please select</option> <option value="yes">Yes, I'll be there!</option> <option value="no">Sorry, can't make it</option> </select>
+     </div>
+     <div class="form-group">
+      <label for="guests">Number of Guests (including yourself) *</label> <select id="guests" name="guests" required> <option value="">Please select</option> <option value="1">1 Guest</option> <option value="2">2 Guests</option> <option value="3">3 Guests</option> <option value="4">4 Guests</option> <option value="5">5+ Guests</option> </select>
+     </div>
+     <div class="form-group">
+      <label for="dietary">Dietary Restrictions</label> <textarea id="dietary" name="dietary" placeholder="Let us know if you have any dietary requirements..."></textarea>
+     </div>
+     <div class="button-group">
+      <button type="button" class="btn btn-close" onclick="closeRsvpModal()">Cancel</button> <button type="submit" class="btn btn-submit">Submit RSVP</button>
+     </div>
+    </form>
+   </div>
+  </div><!-- Envelope Overlay -->
   <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center" style="background: linear-gradient(135deg, #E8DCC8 0%, #F5F0E8 100%);">
    <style>
       @keyframes envelopeSlideIn {
@@ -364,7 +557,7 @@
       </text> <!-- & symbol --> <text x="50" y="58" font-family="Cormorant Garamond, serif" font-size="18" font-weight="300" fill="#FAF7F2" text-anchor="middle" opacity="0.8">
        &amp;
       </text> <!-- C letter --> <text x="62" y="58" font-family="Cormorant Garamond, serif" font-size="20" font-weight="400" fill="#FAF7F2" text-anchor="middle">
-       B
+       S
       </text> <!-- Shine effect --> <ellipse cx="50" cy="40" rx="18" ry="12" fill="white" opacity="0.15" /> <defs>
        <radialgradient id="sealGradient">
         <stop offset="0%" style="stop-color:#E8C547;stop-opacity:1" />
@@ -377,22 +570,30 @@
     </div><!-- Envelope Front -->
     <div class="bg-white rounded-b-lg shadow-2xl px-12 py-8 text-center -mt-2" style="border-top: 2px solid #E8DCC8;">
      <p class="text-sm tracking-[0.3em] uppercase mb-4" style="color: var(--color-sage);">You are cordially invited</p>
-     <p class="font-display text-3xl" style="color: var(--color-text);">Preksha &amp; Bharat</p>
+     <p class="font-display text-3xl" style="color: var(--color-text);">Preksha &amp; Bharat <span style="font-size: 0.6em; font-style: normal;">(Sahil)</span></p>
     </div>
    </div>
   </div>
   <div id="app-wrapper" class="w-full min-h-full"><!-- Navigation -->
    <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 bg-[#FAF7F2]/95 backdrop-blur-sm transition-all duration-300">
     <div class="max-w-6xl mx-auto px-6 py-4">
-     <div class="flex items-center justify-between"><a href="#home" class="font-display text-2xl font-light tracking-wide" style="color: var(--color-sage);">P &amp; B</a>
-      <div class="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase"><a href="#home" class="nav-link" style="color: var(--color-text);">Home</a> <a href="#story" class="nav-link" style="color: var(--color-text);">Our Story</a> <a href="#details" class="nav-link" style="color: var(--color-text);">Details</a> <a href="#schedule" class="nav-link" style="color: var(--color-text);">Schedule</a> <a href="#map" class="nav-link" style="color: var(--color-text);">Location</a>
+     <div class="flex items-center justify-between"><a href="#home" class="font-display text-2xl font-light tracking-wide" style="color: var(--color-sage);">P &amp; S</a>
+      <div class="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase"><a href="#home" class="nav-link" style="color: var(--color-text);">Home</a> 
+        <!-- <a href="#story" class="nav-link" style="color: var(--color-text);">Our Story</a>  -->
+        <a href="#details" class="nav-link" style="color: var(--color-text);">Details</a> 
+        <!-- <a href="#schedule" class="nav-link" style="color: var(--color-text);">Schedule</a>  -->
+        <a href="#map" class="nav-link" style="color: var(--color-text);">Location</a>
       </div><button id="mobile-menu-btn" class="md:hidden p-2" onclick="toggleMobileMenu()">
        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="6" x2="21" y2="6"></line> <line x1="3" y1="12" x2="21" y2="12"></line> <line x1="3" y1="18" x2="21" y2="18"></line>
        </svg></button>
      </div>
     </div><!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-[#FAF7F2] border-t border-[#9CAF88]/20">
-     <div class="flex flex-col items-center py-6 gap-4 text-sm tracking-widest uppercase"><a href="#home" onclick="toggleMobileMenu()" style="color: var(--color-text);">Home</a> <a href="#story" onclick="toggleMobileMenu()" style="color: var(--color-text);">Our Story</a> <a href="#details" onclick="toggleMobileMenu()" style="color: var(--color-text);">Details</a> <a href="#schedule" onclick="toggleMobileMenu()" style="color: var(--color-text);">Schedule</a> <a href="#map" onclick="toggleMobileMenu()" style="color: var(--color-text);">Location</a>
+     <div class="flex flex-col items-center py-6 gap-4 text-sm tracking-widest uppercase"><a href="#home" onclick="toggleMobileMenu()" style="color: var(--color-text);">Home</a> 
+      <!-- <a href="#story" onclick="toggleMobileMenu()" style="color: var(--color-text);">Our Story</a>  -->
+      <a href="#details" onclick="toggleMobileMenu()" style="color: var(--color-text);">Details</a> 
+      <!-- <a href="#schedule" onclick="toggleMobileMenu()" style="color: var(--color-text);">Schedule</a>  -->
+      <a href="#map" onclick="toggleMobileMenu()" style="color: var(--color-text);">Location</a>
      </div>
     </div>
    </nav><!-- Hero Section -->
@@ -403,49 +604,46 @@
       </svg>
      </div>
      <p id="welcome-text" class="text-sm tracking-[0.3em] uppercase mb-6 fade-in" style="color: var(--color-sage); animation-delay: 0.2s;">We invite you to celebrate our love</p>
-     <h1 id="couple-names" class="font-display text-6xl md:text-8xl font-light mb-6 fade-in" style="color: var(--color-text); animation-delay: 0.4s;">Preksha <span class="text-4xl md:text-5xl" style="color: var(--color-sage);">&amp;</span> Bharat</h1>
-     <div class="flex items-center justify-center gap-4 mb-8 fade-in" style="animation-delay: 0.6s;">
-      <div class="h-px w-16" style="background-color: var(--color-sage);"></div>
-      <p class="font-display text-xl italic" style="color: var(--color-sage);">are getting married</p>
-      <div class="h-px w-16" style="background-color: var(--color-sage);"></div>
-     </div>
-     <!-- Shagun Hotel & Banquet -->
-     <p id="wedding-date-display" class="font-display text-3xl md:text-4xl font-light tracking-wide fade-in" style="color: var(--color-text); animation-delay: 0.8s;">April 19 - 20, 2026</p>
-     <p id="venue-display" class="mt-4 text-sm tracking-[0.2em] uppercase fade-in" style="color: var(--color-sage); animation-delay: 1s;"> Surat • Gujarat • India</p><!-- Countdown -->
-     <div id="countdown" class="mt-12 flex justify-center gap-8 fade-in" style="animation-delay: 1.2s;">
-      <div class="text-center">
-       <div id="days" class="font-display text-4xl" style="color: var(--color-text);">
-        ---
+     <h1 id="couple-names" class="font-display text-6xl md:text-8xl font-light mb-6 fade-in" style="color: var(--color-text); animation-delay: 0.4s;">Preksha <span class="text-4xl md:text-5xl" style="color: var(--color-sage);">&amp;</span> Bharat<span class="text-2xl md:text-3xl" style="color: var(--color-text);">(Sahil)</span>
+      <div class="flex items-center justify-center gap-4 mb-8 fade-in" style="animation-delay: 0.6s;">
+       <div class="h-px w-16" style="background-color: var(--color-sage);"></div>
+       <p class="font-display text-xl italic" style="color: var(--color-sage);">are getting married</p>
+       <div class="h-px w-16" style="background-color: var(--color-sage);"></div>
+      </div><!-- Shagun Hotel & Banquet --> <p id="wedding-date-display" class="font-display text-3xl md:text-4xl font-light tracking-wide fade-in" style="color: var(--color-text); animation-delay: 0.8s;">April 19 - 20, 2026</p><p id="venue-display" class="mt-4 text-sm tracking-[0.2em] uppercase fade-in" style="color: var(--color-sage); animation-delay: 1s;">Surat • Gujarat • India</p><!-- Countdown -->
+      <div id="countdown" class="mt-12 flex justify-center gap-8 fade-in" style="animation-delay: 1.2s;">
+       <div class="text-center">
+        <div id="days" class="font-display text-4xl" style="color: var(--color-text);">
+         ---
+        </div>
+        <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
+         Days
+        </div>
        </div>
-       <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
-        Days
+       <div class="text-center">
+        <div id="hours" class="font-display text-4xl" style="color: var(--color-text);">
+         --
+        </div>
+        <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
+         Hours
+        </div>
        </div>
-      </div>
-      <div class="text-center">
-       <div id="hours" class="font-display text-4xl" style="color: var(--color-text);">
-        --
+       <div class="text-center">
+        <div id="minutes" class="font-display text-4xl" style="color: var(--color-text);">
+         --
+        </div>
+        <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
+         Minutes
+        </div>
        </div>
-       <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
-        Hours
+       <div class="text-center">
+        <div id="seconds" class="font-display text-4xl" style="color: var(--color-text);">
+         --
+        </div>
+        <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
+         Seconds
+        </div>
        </div>
-      </div>
-      <div class="text-center">
-       <div id="minutes" class="font-display text-4xl" style="color: var(--color-text);">
-        --
-       </div>
-       <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
-        Minutes
-       </div>
-      </div>
-      <div class="text-center">
-       <div id="seconds" class="font-display text-4xl" style="color: var(--color-text);">
-        --
-       </div>
-       <div class="text-xs tracking-widest uppercase mt-1" style="color: var(--color-sage);">
-        Seconds
-       </div>
-      </div>
-     </div><a href="#rsvp" class="inline-block mt-12 px-10 py-4 border text-sm tracking-widest uppercase transition-all duration-300 hover:bg-[#9CAF88] hover:text-white fade-in" style="border-color: var(--color-sage); color: var(--color-sage); animation-delay: 1.4s;"> Confirm Attendance </a>
+      </div><button onclick="triggerMagic()" class="inline-block mt-12 px-10 py-4 border text-sm tracking-widest uppercase transition-all duration-300 hover:bg-[#9CAF88] hover:text-white fade-in cursor-pointer hover:shadow-lg" style="border-color: var(--color-sage); color: var(--color-sage); background: transparent; animation-delay: 1.4s;"> ✨ Make a Wish ✨ </button>
     </div>
    </section><!-- Details Section -->
    <section id="details" class="scroll-section py-24 px-6" style="background-color: var(--color-cream);">
@@ -462,7 +660,7 @@
        </div>
        <h3 class="font-display text-3xl mb-4" style="color: var(--color-text);">Haldi</h3>
        <p class="text-sm tracking-widest uppercase mb-2" style="color: var(--color-sage);">10:00 AM</p>
-       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel & Banquet</p>
+       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel &amp; Banquet</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Surat, Gujarat</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">April 19, 2026</p>
       </div><!-- Mayra Card -->
@@ -473,7 +671,7 @@
        </div>
        <h3 class="font-display text-3xl mb-4" style="color: var(--color-text);">Mayra</h3>
        <p class="text-sm tracking-widest uppercase mb-2" style="color: var(--color-sage);">3:00 PM</p>
-       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel & Banquet</p>
+       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Mahalakshmi Party Plot</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Surat, Gujarat</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">April 19, 2026</p>
       </div>
@@ -486,7 +684,7 @@
        </div>
        <h3 class="font-display text-3xl mb-4" style="color: var(--color-text);">Reception</h3>
        <p class="text-sm tracking-widest uppercase mb-2" style="color: var(--color-sage);">6:00 PM Onwards</p>
-       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel & Banquet</p>
+       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Mahalakshmi Party Plot</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Surat, Gujarat</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">April 19, 2026</p>
       </div><!-- Ceremony Card -->
@@ -495,9 +693,9 @@
         <svg width="50" height="50" viewbox="0 0 50 50" fill="currentColor" class="mx-auto"><path d="M25 5 C15 15, 10 25, 15 40 C20 35, 25 25, 25 5" opacity="0.6" /> <path d="M25 5 C35 15, 40 25, 35 40 C30 35, 25 25, 25 5" opacity="0.6" />
         </svg>
        </div>
-       <h3 class="font-display text-3xl mb-4" style="color: var(--color-text);">Marriage Ceremony</h3>
+       <h3 class="font-display text-3xl mb-4" style="color: var(--color-text);">Phere</h3>
        <p class="text-sm tracking-widest uppercase mb-2" style="color: var(--color-sage);">12:39 PM Onwards</p>
-       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel & Banquet</p>
+       <p class="font-display text-xl mb-1" style="color: var(--color-text);">Shagun Hotel &amp; Banquet</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">Surat, Gujarat</p>
        <p class="text-sm" style="color: var(--color-text); opacity: 0.7;">April 20, 2026</p>
       </div>
@@ -509,158 +707,110 @@
      <div class="text-center mb-16">
       <p class="text-sm tracking-[0.3em] uppercase mb-4" style="color: var(--color-sage);">Find us</p>
       <h2 class="font-display text-5xl font-light" style="color: var(--color-text);">Venue Locations</h2>
-     </div>
-     
-     <!-- Haldi Card -->
+     </div><!-- Haldi Card -->
      <div class="bg-white/95 backdrop-blur-sm border border-[#9CAF88]/20 p-8 md:p-12 rounded-lg shadow-lg mb-8">
       <!-- Icon -->
       <div class="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style="background-color: var(--color-sage); opacity: 0.1;">
-       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-      </div>
-      
-      <!-- Title -->
-      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Haldi</h3>
-      
-      <!-- Location & Time -->
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+       </svg>
+      </div><!-- Title -->
+      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Haldi</h3><!-- Location & Time -->
       <div class="space-y-3 mb-8 text-center">
-       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel & Banquet<br/>Surat, Gujarat</p>
+       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel &amp; Banquet<br>
+         Surat, Gujarat</p>
        <div class="flex items-center justify-center gap-2" style="color: var(--color-text); opacity: 0.7;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
-         <circle cx="12" cy="12" r="10"></circle>
-         <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span class="text-sm">April 19, 2026 • 10:00 AM</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
+         <circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14"></polyline>
+        </svg><span class="text-sm">April 19, 2026 • 10:00 AM</span>
        </div>
-      </div>
-      
-      <!-- Map -->
+      </div><!-- Map -->
       <div class="mb-8 rounded-lg overflow-hidden border border-[#9CAF88]/20">
-       <iframe src="https://www.google.com/maps?q=Shagun%20Hotel%20Banquet%2C%20Surat%20Gujarat&output=embed" width="100%" height="280" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Haldi Location" style="border: 0px; display: block;"></iframe>
-      </div>
-      
-      <!-- Buttons -->
+       <iframe src="https://www.google.com/maps?q=Shagun%20Hotel%20Banquet%2C%20Surat%20Gujarat&amp;output=embed" width="100%" height="280" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Haldi Location" style="border: 0px; display: block;"></iframe>
+      </div><!-- Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
        <a href="https://maps.google.com/?q=Shagun+Hotel+Banquet+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Get Directions
-       </a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+        </svg> Get Directions </a>
       </div>
-     </div>
-
-     <!-- Mayra Card -->
+     </div><!-- Mayra Card -->
      <div class="bg-white/95 backdrop-blur-sm border border-[#9CAF88]/20 p-8 md:p-12 rounded-lg shadow-lg mb-8">
       <!-- Icon -->
       <div class="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style="background-color: var(--color-sage); opacity: 0.1;">
-       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-      </div>
-      
-      <!-- Title -->
-      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Mayra</h3>
-      
-      <!-- Location & Time -->
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+       </svg>
+      </div><!-- Title -->
+      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Mayra</h3><!-- Location & Time -->
       <div class="space-y-3 mb-8 text-center">
-       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Mahalaxmi Party Plot<br/>Surat, Gujarat</p>
+       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Mahalakshmi Party Plot<br>
+         Surat, Gujarat</p>
        <div class="flex items-center justify-center gap-2" style="color: var(--color-text); opacity: 0.7;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
-         <circle cx="12" cy="12" r="10"></circle>
-         <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span class="text-sm">April 19, 2026 • 3:00 PM</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
+         <circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14"></polyline>
+        </svg><span class="text-sm">April 19, 2026 • 3:00 PM</span>
        </div>
-      </div>
-      
-      <!-- Map -->
+      </div><!-- Map -->
       <div class="mb-8 rounded-lg overflow-hidden border border-[#9CAF88]/20">
-       <iframe src="https://www.google.com/maps?q=Mahalaxmi%20Party%20Plot%2C%20Surat%20Gujarat&output=embed" width="100%" height="280" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mayra Location" style="border: 0px; display: block;"></iframe>
-      </div>
-      
-      <!-- Buttons -->
+       <iframe src="https://www.google.com/maps?q=Mahalakshmi%20Party%20Plot%2C%20Surat%20Gujarat&amp;output=embed" width="100%" height="280" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mayra Location" style="border: 0px; display: block;"></iframe>
+      </div><!-- Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
-       <a href="https://maps.google.com/?q=Mahalaxmi+Party+Plot+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Get Directions
-       </a>
+       <a href="https://maps.google.com/?q=Mahalakshmi+Party+Plot+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+        </svg> Get Directions </a>
       </div>
-     </div>
-
-     <!-- Reception Card -->
+     </div><!-- Reception Card -->
      <div class="bg-white/95 backdrop-blur-sm border border-[#9CAF88]/20 p-8 md:p-12 rounded-lg shadow-lg mb-8">
       <!-- Icon -->
       <div class="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style="background-color: var(--color-sage); opacity: 0.1;">
-       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-      </div>
-      
-      <!-- Title -->
-      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Reception</h3>
-      
-      <!-- Location & Time -->
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+       </svg>
+      </div><!-- Title -->
+      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Reception</h3><!-- Location & Time -->
       <div class="space-y-3 mb-8 text-center">
-       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Mahalaxmi Party Plot<br/>Surat, Gujarat</p>
+       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Mahalakshmi Party Plot<br>
+         Surat, Gujarat</p>
        <div class="flex items-center justify-center gap-2" style="color: var(--color-text); opacity: 0.7;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
-         <circle cx="12" cy="12" r="10"></circle>
-         <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span class="text-sm">April 19, 2026 • 6:00 PM onwards</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
+         <circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14"></polyline>
+        </svg><span class="text-sm">April 19, 2026 • 6:00 PM onwards</span>
        </div>
-      </div>
-      
-      <!-- Map -->
+      </div><!-- Map -->
       <div class="mb-8 rounded-lg overflow-hidden border border-[#9CAF88]/20">
-       <iframe src="https://www.google.com/maps?q=Mahalaxmi%20Party%20Plot%2C%20Surat%20Gujarat&output=embed" width="100%" height="280" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Reception Location" style="border: 0px; display: block;"></iframe>
-      </div>
-      
-      <!-- Buttons -->
+       <iframe src="https://www.google.com/maps?q=Mahalakshmi%20Party%20Plot%2C%20Surat%20Gujarat&amp;output=embed" width="100%" height="280" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Reception Location" style="border: 0px; display: block;"></iframe>
+      </div><!-- Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
-       <a href="https://maps.google.com/?q=Mahalaxmi+Party+Plot+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Get Directions
-       </a>
-       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Reception%20-%20Preksha%20%26%20Bharat's%20Wedding&dates=20260419T121200Z/20260419T210000Z&location=Mahalaxmi%20Party%20Plot%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
-        Add to Calendar
-       </a>
+       <a href="https://maps.google.com/?q=Mahalakshmi+Party+Plot+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+        </svg> Get Directions </a> <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Reception%20-%20Preksha%20%26%20Bharat's%20Wedding&amp;dates=20260419T121200Z/20260419T210000Z&amp;location=Mahalakshmi%20Party%20Plot%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18" />
+        </svg> Add to Calendar </a>
       </div>
-     </div>
-
-     <!-- Marriage Ceremony Card -->
+     </div><!-- Phere Card -->
      <div class="bg-white/95 backdrop-blur-sm border border-[#9CAF88]/20 p-8 md:p-12 rounded-lg shadow-lg">
       <!-- Icon -->
       <div class="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center" style="background-color: var(--color-sage); opacity: 0.1;">
-       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-      </div>
-      
-      <!-- Title -->
-      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Marriage Ceremony</h3>
-      <p class="font-display text-2xl text-center mb-4" style="color: var(--color-sage);">Wedding Day</p>
-      
-      <!-- Location & Time -->
+       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-sage); width: 28px; height: 28px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+       </svg>
+      </div><!-- Title -->
+      <h3 class="font-display text-3xl text-center mb-4" style="color: var(--color-text);">Phere</h3>
+      <p class="font-display text-2xl text-center mb-4" style="color: var(--color-sage);">Wedding Day</p><!-- Location & Time -->
       <div class="space-y-3 mb-8 text-center">
-       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel & Banquet<br/>Surat, Gujarat</p>
+       <p class="text-sm font-medium" style="color: var(--color-text); opacity: 0.7;">Shagun Hotel &amp; Banquet<br>
+         Surat, Gujarat</p>
        <div class="flex items-center justify-center gap-2" style="color: var(--color-text); opacity: 0.7;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
-         <circle cx="12" cy="12" r="10"></circle>
-         <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        <span class="text-sm">April 20, 2026 • 12:39 PM</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; color: var(--color-sage);">
+         <circle cx="12" cy="12" r="10" /> <polyline points="12 6 12 12 16 14"></polyline>
+        </svg><span class="text-sm">April 20, 2026 • 12:39 PM</span>
        </div>
-      </div>
-      
-      <!-- Map -->
+      </div><!-- Map -->
       <div class="mb-8 rounded-lg overflow-hidden border border-[#9CAF88]/20">
-       <iframe src="https://www.google.com/maps?q=Shagun%20Hotel%20Banquet%2C%20Surat%20Gujarat&output=embed" width="100%" height="280" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Marriage Ceremony Location" style="border: 0px; display: block;"></iframe>
-      </div>
-      
-      <!-- Buttons -->
+       <iframe src="https://www.google.com/maps?q=Shagun%20Hotel%20Banquet%2C%20Surat%20Gujarat&amp;output=embed" width="100%" height="280" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Phere Location" style="border: 0px; display: block;"></iframe>
+      </div><!-- Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
        <a href="https://maps.google.com/?q=Shagun+Hotel+Banquet+Surat+Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Get Directions
-       </a>
-       <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Preksha%20%26%20Bharat's%20Marriage%20Ceremony&dates=20260420T071900Z/20260420T140000Z&location=Shagun%20Hotel%20%26%20Banquet%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
-        Add to Calendar
-       </a>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />
+        </svg> Get Directions </a> <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Preksha%20%26%20Bharat's%20Phere&amp;dates=20260420T071900Z/20260420T140000Z&amp;location=Shagun%20Hotel%20%26%20Banquet%2C%20Surat%2C%20Gujarat" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 border" style="border-color: var(--color-sage); color: var(--color-sage); background-color: transparent;" onmouseover="this.style.backgroundColor='var(--color-sage)'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-sage)';">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18" />
+        </svg> Add to Calendar </a>
       </div>
      </div>
     </div>
@@ -676,6 +826,126 @@
    </footer>
   </div>
   <script>
+    function triggerMagic() {
+      const button = event.target;
+      button.disabled = true;
+      
+      // Create sparkle particles
+      createSparkles();
+      
+      // Heart glow effect
+      const heartOverlay = document.createElement('div');
+      heartOverlay.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 120px;
+        z-index: 100;
+        animation: heartPulse 2s ease-out forwards;
+        pointer-events: none;
+      `;
+      heartOverlay.textContent = '💕';
+      document.body.appendChild(heartOverlay);
+      
+      // Show wish message
+      const wishMessage = document.createElement('div');
+      wishMessage.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 40px 60px;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 101;
+        animation: wishAppear 0.6s ease-out 0.8s forwards;
+        opacity: 0;
+      `;
+      wishMessage.innerHTML = `
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--color-sage); margin: 0 0 16px 0;">Your Wish is Sealed</p>
+        <p style="font-size: 14px; color: var(--color-text); margin: 0; opacity: 0.7;">With love and blessings for Preksha & Bharat</p>
+      `;
+      document.body.appendChild(wishMessage);
+      
+      // Auto-remove after animation
+      setTimeout(() => {
+        heartOverlay.remove();
+        wishMessage.remove();
+        button.disabled = false;
+      }, 3500);
+    }
+
+    function createSparkles() {
+      const colors = ['var(--color-sage)', 'var(--color-gold)', 'var(--color-cream)'];
+      
+      for (let i = 0; i < 30; i++) {
+        const sparkle = document.createElement('div');
+        const size = Math.random() * 8 + 4;
+        const startX = Math.random() * window.innerWidth;
+        const startY = Math.random() * window.innerHeight;
+        const duration = Math.random() * 2 + 1.5;
+        const delay = Math.random() * 0.3;
+        
+        sparkle.style.cssText = `
+          position: fixed;
+          width: ${size}px;
+          height: ${size}px;
+          background: var(--color-sage);
+          border-radius: 50%;
+          left: ${startX}px;
+          top: ${startY}px;
+          z-index: 99;
+          pointer-events: none;
+          animation: sparkleFloat ${duration}s ease-out ${delay}s forwards;
+          box-shadow: 0 0 ${size}px var(--color-gold);
+        `;
+        
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => sparkle.remove(), (duration + delay) * 1000);
+      }
+    }
+
+    // Add animations
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes sparkleFloat {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-200px) scale(0);
+        }
+      }
+      
+      @keyframes heartPulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 1;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 0;
+        }
+      }
+      
+      @keyframes wishAppear {
+        to {
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+
     // Music Player Functionality with Soothing Music & Auto-play
     const audioPlayer = document.getElementById('audioPlayer');
     const musicToggle = document.getElementById('musicToggle');
@@ -844,5 +1114,6 @@
       });
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d5000d6c5634732',t:'MTc3MjI4MjU2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d5000d6c5634732',t:'MTc3MjI4MjU2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d5730c6b64e85b3',t:'MTc3MjM1NzkyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
